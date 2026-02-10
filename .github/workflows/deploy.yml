@@ -1,0 +1,39 @@
+name: Deploy Cicd-project to EC2
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            cd ~/Cicd-project-devops
+            git pull origin main
+
+            docker stop Cicd-project || true
+            docker rm Cicd-project || true
+
+            docker build -t Cicd-project .
+            docker run -d -p 80:80 --name Cicd-project Cicd-project
+
+# Add GitHub Secrets 🔐
+
+# In GitHub repo → Settings → Secrets → Actions
+
+# Add:
+
+# EC2_HOST → EC2 public IP
+
+# EC2_KEY → private key content (.pem)
