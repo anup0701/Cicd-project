@@ -19,14 +19,14 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_KEY }}
           script: |
-            cd ~/Cicd-project-devops
+            cd ~/Cicd-project
             git pull origin main
 
-            docker stop Cicd-project || true
-            docker rm Cicd-project || true
+            docker stop cicd-img || true
+            docker rm cicd-img || true
 
-            docker build -t Cicd-project .
-            docker run -d -p 80:80 --name Cicd-project Cicd-project
+            docker build -t cicd-img .
+            docker run -d -p 80:80 --name cicd-img cicd-img
 
 # Add GitHub Secrets 🔐
 
